@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Virtual Hong Kong Maritime  Museum</title>
+  <title>Virtual Hong Kong Maritime Museum</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -60,7 +60,9 @@
           div.className = "artifact";
           div.innerHTML = `
             <h2>${item.Name}</h2>
-            <img src="${item["Link to Image"]}" alt="${item.Name}" />
+             <a href="${item["Link to Image"]}" target="_blank">
+              <img src="${item["Link to Image"]}" alt="${item.Name}">
+            </a>
             <p><strong>Description:</strong> ${item["Short Description"]}</p>
             <p><strong>Findspot:</strong> ${item.Findsopt}</p>
             <p><strong>Time Period:</strong> ${item["Time Period"]}</p>
