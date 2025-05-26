@@ -6,74 +6,110 @@
   <title>Virtual Hong Kong Maritime Museum</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-      padding: 2rem;
+      font-family: Georgia, 'Times New Roman', serif;
+      background-color: #f8f5f2;
+      color: #333;
+      max-width: 700px;
+      margin: auto;
+      padding: 3em 1.5em;
+      line-height: 1.6;
     }
-    .intro {
-      max-width: 800px;
-      margin: 0 auto 2rem auto;
-      background: white;
-      padding: 1rem;
-      border-radius: 6px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .artifact {
-      background: white;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border-radius: 6px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .artifact img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 4px;
-    }
+
     h1 {
-      text-align: center;
+      font-size: 2em;
+      margin-bottom: 1em;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 0.3em;
     }
-    h2 {
-      margin-top: 0.5rem;
+
+    p {
+      margin-bottom: 2em;
+    }
+
+    a {
+      text-decoration: none;
+      color: #0066cc;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: #004499;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: #fff;
+      padding: 1em;
+      margin-bottom: 1em;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+      transition: transform 0.2s ease;
+    }
+
+    li:hover {
+      transform: translateY(-2px);
+    }
+
+    .no-link {
+      color: #aaa;
+      text-decoration: line-through;
+      cursor: not-allowed;
+      font-style: italic;
     }
   </style>
 </head>
 <body>
-  <h1>Virtual Museum Collection</h1>
+  <h1>Virtual Hong Kong Maritime Museum</h1>
 
-  <div class="intro">
-    <p>Welcome to the Virtual Museum of Maritime Artifacts! This online collection brings together historical objects that reflect human interaction with the sea, ranging from navigational instruments and religious figures to ancient maps and diving equipment. Each artifact offers a glimpse into maritime history, cultural beliefs, and technological evolution from across different regions and centuries.</p>
-  </div>
+  <p>
+    <a href="https://docs.google.com/spreadsheets/d/1oEbzcGN2gJw6bINGRhHNy0y-i6FLdCG31ianwfim6Nw/edit?usp=sharing" target="_blank">
+        ➕ Add your website to the list
+    </a>
+  </p>
 
-  <div id="museum">Loading artifacts...</div>
+  <ul id="link-list"></ul>
 
   <script>
-    const apiUrl = "https://api.sheetbest.com/sheets/67923353-1894-4bcb-a3a2-92de5f6c7f22";
+    const jsonUrl = "https://api.sheetbest.com/sheets/3b3dd7b5-c779-42d3-ba44-32d37c6315b4";
 
-    fetch(apiUrl)
-      .then(res => res.json())
+    fetch(jsonUrl)
+      .then(response => {
+        if (!response.ok) throw new Error("Network response was not ok");
+        return response.json();
+      })
       .then(data => {
-        const gallery = document.getElementById("museum");
-        gallery.innerHTML = "";
+        const list = document.getElementById("link-list");
+
         data.forEach(item => {
-          const div = document.createElement("div");
-          div.className = "artifact";
-          div.innerHTML = `
-            <h2>${item.Name}</h2>
-             <a href="${item["Link to Image"]}" target="_blank">
-              <img src="${item["Link to Image"]}" alt="${item.Name}">
-            </a>
-            <p><strong>Description:</strong> ${item["Short Description"]}</p>
-            <p><strong>Findspot:</strong> ${item.Findsopt}</p>
-            <p><strong>Time Period:</strong> ${item["Time Period"]}</p>
-          `;
-          gallery.appendChild(div);
+          if (item.Directory !== 'pseudodynamic') return;
+
+          const li = document.createElement("li");
+
+          if (item.Website) {
+            const link = document.createElement("a");
+            link.href = item.Website;
+            link.textContent = item.Name;
+            link.target = "_blank";
+            li.appendChild(link);
+          } else {
+            const span = document.createElement("span");
+            span.textContent = item.Name;
+            span.className = "no-link";
+            li.appendChild(span);
+          }
+
+          list.appendChild(li);
         });
       })
-      .catch(err => {
-        document.getElementById("museum").innerText = "Failed to load artifacts.";
-        console.error("Error:", err);
+      .catch(error => {
+        console.error("Error fetching JSON:", error);
       });
   </script>
 </body>
 </html>
+
